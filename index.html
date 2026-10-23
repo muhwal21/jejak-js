@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>jejak.js — JavaScript playground</title>
+  <meta name="description" content="Open-source JavaScript playground with inline values, live comments, code coverage, Value Explorer and a Time Machine debugger. Runs fully in the browser.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%235a46d6'/%3E%3Cpath d='M9 22c2 2 6 2 7-2V9M20 13h4M20 18h3' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+</head>
+<body>
+<div class="app" id="app">
+  <header class="bar">
+    <div class="brand"><b>jejak<i>.js</i></b><span data-i18n="tagline"></span></div>
+    <div class="ctl"><label for="ex" data-i18n="examples"></label><select id="ex"></select></div>
+    <div class="ctl"><label data-i18n="mode"></label>
+      <div class="seg" role="group" aria-label="Run mode">
+        <button data-mode="auto" data-i18n="modeAuto" data-i18n-title="modeAutoTip"></button>
+        <button data-mode="save" data-i18n="modeSave" data-i18n-title="modeSaveTip"></button>
+        <button data-mode="manual" data-i18n="modeManual" data-i18n-title="modeManualTip"></button>
+      </div>
+    </div>
+    <label class="chk" data-i18n-title="logAllTip"><input type="checkbox" id="logall"> <span data-i18n="logAll"></span></label>
+    <div class="spacer"></div>
+    <select id="lang" class="lang" aria-label="Language"><option value="en">EN</option><option value="id">ID</option></select>
+    <button class="btn" id="share" data-i18n="share" data-i18n-title="shareTip"></button>
+    <button class="btn" id="copyclip" data-i18n="copyResult" data-i18n-title="copyResultTip"></button>
+    <button class="btn primary" id="run" title="Ctrl/Cmd+Enter">▶ <span data-i18n="run"></span></button>
+  </header>
+
+  <main class="work">
+    <section class="pane" aria-label="Editor">
+      <div class="edwrap"><div id="editor" style="height:100%"></div></div>
+      <div class="tm off" id="tm">
+        <div class="tmrow">
+          <span class="tmtitle" data-i18n="tm"></span>
+          <button class="btn" id="tmToggle" style="height:30px;padding:0 10px" data-i18n="tmStart"></button>
+          <div class="tmctl tmrow" style="gap:4px">
+            <button class="ib" id="tmFirst" data-i18n-title="tmFirst"><svg viewBox="0 0 24 24"><path d="M6 5v14M18 6l-8 6 8 6z"/></svg></button>
+            <button class="ib" id="tmBack" data-i18n-title="tmBack"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <button class="ib" id="tmPlay" data-i18n-title="tmPlay"><svg viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></svg></button>
+            <button class="ib" id="tmInto" data-i18n-title="tmInto"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M6 20h12"/></svg></button>
+            <button class="ib" id="tmOver" data-i18n-title="tmOver"><svg viewBox="0 0 24 24"><path d="M4 14a8 8 0 0 1 15-4M19 4v6h-6M10 19h4"/></svg></button>
+            <button class="ib" id="tmOut" data-i18n-title="tmOut"><svg viewBox="0 0 24 24"><path d="M12 20V9M7 14l5-5 5 5M6 4h12"/></svg></button>
+            <button class="ib" id="tmLast" data-i18n-title="tmLast"><svg viewBox="0 0 24 24"><path d="M18 5v14M6 6l8 6-8 6z"/></svg></button>
+            <button class="ib" id="tmJump" data-i18n-title="tmJump"><svg viewBox="0 0 24 24"><path d="M4 12h12M12 7l5 5-5 5M20 5v14"/></svg></button>
+            <select id="tmSpeed" data-i18n-title="tmSpeed" style="height:30px;padding:0 6px"><option value="600">0.5×</option><option value="300" selected>1×</option><option value="120">2×</option><option value="40">5×</option></select>
+          </div>
+          <span class="tminfo" id="tmInfo"></span>
+        </div>
+        <canvas id="tl" aria-label="Interactive timeline"></canvas>
+      </div>
+    </section>
+
+    <aside class="pane side" aria-label="Inspector">
+      <div class="tabs" role="tablist">
+        <button role="tab" data-tab="explorer" aria-selected="true"><span data-i18n="tabExplorer"></span><span class="n" id="nExp">0</span></button>
+        <button role="tab" data-tab="console" aria-selected="false"><span data-i18n="tabConsole"></span><span class="n" id="nCon">0</span></button>
+        <button role="tab" data-tab="story" aria-selected="false"><span data-i18n="tabStory"></span><span class="n" id="nSteps">0</span></button>
+        <button role="tab" data-tab="debug" aria-selected="false" data-i18n="tabDebug"></button>
+        <button role="tab" data-tab="guide" aria-selected="false" data-i18n="tabGuide"></button>
+      </div>
+      <div class="panel" id="p-explorer"></div>
+      <div class="panel" id="p-console" hidden></div>
+      <div class="panel story" id="p-story" hidden></div>
+      <div class="panel" id="p-debug" hidden></div>
+      <div class="panel guide" id="p-guide" hidden></div>
+    </aside>
+  </main>
+
+  <footer class="status" id="status">
+    <span class="st"><i class="pill" id="pill"></i><span id="stText"></span></span>
+    <span id="stCov"></span><span id="stSteps"></span><span id="stHint" data-i18n="hint"></span>
+    <a class="gh" href="https://github.com/" id="ghLink" target="_blank" rel="noopener">GitHub</a>
+  </footer>
+</div>
+<div class="peek" id="peek" hidden></div>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
