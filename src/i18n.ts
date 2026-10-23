@@ -1,0 +1,105 @@
+export type Lang = 'en' | 'id';
+
+const en = {
+  tagline: 'JavaScript playground with inline values',
+  examples: 'Examples', pickExample: 'Pick an example…', mode: 'Mode',
+  modeAuto: 'Auto', modeSave: 'On save', modeManual: 'Manual',
+  modeAutoTip: 'Run while typing', modeSaveTip: 'Run on Ctrl/Cmd+S', modeManualTip: 'Run only when you click Run',
+  modeAutoToast: 'Auto mode: runs as you type', modeSaveToast: 'Save mode: press Ctrl/Cmd+S', modeManualToast: 'Manual mode: click Run',
+  logAll: 'Log every line', logAllTip: 'Logpoint on every line: show the value of each expression',
+  share: 'Share', shareTip: 'Copy a link that opens this code',
+  copyResult: 'Copy with results', copyResultTip: 'Copy the code with its results as comments',
+  run: 'Run',
+  tm: 'Time Machine', tmStart: 'Start', tmClose: 'Close',
+  tmFirst: 'Go to start', tmBack: 'Step back (Alt+←)', tmPlay: 'Auto-play', tmInto: 'Step into (Alt+→)',
+  tmOver: 'Step over (Alt+↓)', tmOut: 'Step out (Alt+↑)', tmLast: 'Go to end', tmJump: 'Jump to the next execution of the cursor line (Alt+J)',
+  tmSpeed: 'Playback speed', tmRecorded: '{n} steps recorded — click <b>Start</b> to explore', tmNone: 'Run the code to record steps',
+  tmInfo: 'step <b>{i}</b>/{n} · line <b>{line}</b> · {fn}', depth: 'depth {d}',
+  mainProgram: 'main program', noSteps: 'No steps to replay yet', neverRan: 'Line {line} never ran',
+  tabExplorer: 'Value Explorer', tabConsole: 'Console', tabStory: 'Order', tabDebug: 'Stack & Watch', tabGuide: 'Guide',
+  ready: 'Ready', running: 'Running…', done: 'Done · {ms}', errors: '{n} error · {ms}', syntaxAt: 'SyntaxError on line {line}',
+  coverage: 'Coverage {p}% ({hit}/{total} statements & branches)', steps: '{n} steps',
+  hint: 'Click the gutter for a logpoint · select an expression to evaluate it · Shift+F9 pins it',
+  noResult: 'No results yet.', fixSyntax: 'Fix the syntax error on line {line} first: {msg}',
+  noValues: 'No values yet. Put an identifier on its own line, add //? after an expression, or use console.log().',
+  kindValue: 'value', kindLogpoint: 'logpoint', kindPinned: 'pinned', kindError: 'error',
+  copy: 'Copy', graph: 'Graph', tree: 'Tree', copied: 'Copied to clipboard', copyFailed: 'Could not copy',
+  linkCopied: 'Link copied — anyone with it sees this code',
+  consoleEmpty: 'Console is empty. console.log() output and errors appear here in execution order.',
+  errPath: 'path', storyEmpty: 'The line-by-line execution order (code story) appears here after the code runs.',
+  storyNote: '{n} steps{cap}. Click a row to open it in the Time Machine.', storyCap: ' (capped at 5000)',
+  calledFrom: 'called from L{line}', programEnd: '(program finished)', end: 'end',
+  debugEmpty: 'Run the code, then open the Time Machine to inspect variables, the call stack and watches at each step.',
+  debugStep: 'Step {i} of {n} · line {line}', debugInactive: 'Time Machine is off — showing the last step. Click "Start" under the editor.',
+  watch: 'Watch', watchPh: 'variable path, e.g. user.address.city', add: 'Add', noWatch: 'No watches yet.', notInScope: '(not in scope at this step)',
+  removeWatch: 'Remove watch', callStack: 'Call stack', now: '← now', asyncTag: 'async',
+  scopeVars: 'Variables in scope (before the line runs)', noVars: 'No variables.',
+  lpOn: 'Logpoint set on line {line}', lpOff: 'Logpoint removed from line {line}',
+  lpTip: 'Click to set a logpoint', lpOnTip: 'Logpoint (click to remove)',
+  covOk: 'Executed', covPart: 'Partially executed', covNone: 'Not executed', covErr: 'Error source', covPath: 'On the error path',
+  pinned: 'Pinned {expr}', unpinned: 'Unpinned {expr}', selectToPin: 'Select an expression first',
+  peekWhere: 'step {i}', peekAfter: 'after line {line}', peekLast: 'last value (L{line})', peekEval: 'evaluated · {n}× ran',
+  peekNever: 'never evaluated', peekNotExpr: 'not a complete expression',
+  timeout: 'Execution took more than 4 seconds and was stopped (infinite loop?)',
+  workerBlocked: 'The browser blocked the Web Worker: ',
+  lang: 'Language',
+};
+type Dict = typeof en;
+
+const id: Dict = {
+  tagline: 'playground JavaScript dengan nilai inline',
+  examples: 'Contoh', pickExample: 'Pilih contoh…', mode: 'Mode',
+  modeAuto: 'Otomatis', modeSave: 'Saat simpan', modeManual: 'Manual',
+  modeAutoTip: 'Jalan otomatis saat mengetik', modeSaveTip: 'Jalan saat Ctrl/Cmd+S', modeManualTip: 'Jalan hanya saat klik Jalankan',
+  modeAutoToast: 'Mode otomatis: jalan saat mengetik', modeSaveToast: 'Mode simpan: tekan Ctrl/Cmd+S', modeManualToast: 'Mode manual: klik Jalankan',
+  logAll: 'Log semua baris', logAllTip: 'Logpoint di semua baris: tampilkan nilai setiap ekspresi',
+  share: 'Bagikan', shareTip: 'Salin link yang membuka kode ini',
+  copyResult: 'Salin hasil', copyResultTip: 'Salin kode beserta hasilnya sebagai komentar',
+  run: 'Jalankan',
+  tm: 'Time Machine', tmStart: 'Mulai', tmClose: 'Tutup',
+  tmFirst: 'Ke awal', tmBack: 'Mundur satu langkah (Alt+←)', tmPlay: 'Putar otomatis', tmInto: 'Step into (Alt+→)',
+  tmOver: 'Step over (Alt+↓)', tmOut: 'Step out (Alt+↑)', tmLast: 'Ke akhir', tmJump: 'Lompat ke eksekusi berikutnya di baris kursor (Alt+J)',
+  tmSpeed: 'Kecepatan putar', tmRecorded: '{n} langkah terekam — klik <b>Mulai</b> untuk menelusuri', tmNone: 'Jalankan kode untuk merekam langkah',
+  tmInfo: 'langkah <b>{i}</b>/{n} · baris <b>{line}</b> · {fn}', depth: 'kedalaman {d}',
+  mainProgram: 'program utama', noSteps: 'Belum ada langkah untuk diputar', neverRan: 'Baris {line} tidak pernah dieksekusi',
+  tabExplorer: 'Value Explorer', tabConsole: 'Console', tabStory: 'Urutan', tabDebug: 'Stack & Watch', tabGuide: 'Panduan',
+  ready: 'Siap', running: 'Menjalankan…', done: 'Selesai · {ms}', errors: '{n} error · {ms}', syntaxAt: 'SyntaxError di baris {line}',
+  coverage: 'Coverage {p}% ({hit}/{total} statement & cabang)', steps: '{n} langkah',
+  hint: 'Klik gutter untuk logpoint · blok ekspresi untuk menghitungnya · Shift+F9 menyematkannya',
+  noResult: 'Belum ada hasil.', fixSyntax: 'Perbaiki syntax error di baris {line} dulu: {msg}',
+  noValues: 'Belum ada nilai. Tulis identifier di barisnya sendiri, tambahkan //? setelah ekspresi, atau pakai console.log().',
+  kindValue: 'nilai', kindLogpoint: 'logpoint', kindPinned: 'disematkan', kindError: 'error',
+  copy: 'Salin', graph: 'Graph', tree: 'Tree', copied: 'Disalin ke clipboard', copyFailed: 'Tidak bisa menyalin',
+  linkCopied: 'Link disalin — siapa pun yang membukanya melihat kode ini',
+  consoleEmpty: 'Console kosong. Output console.log() dan error tampil di sini sesuai urutan eksekusi.',
+  errPath: 'jalur', storyEmpty: 'Urutan eksekusi baris per baris (code story) tampil di sini setelah kode jalan.',
+  storyNote: '{n} langkah{cap}. Klik baris untuk membukanya di Time Machine.', storyCap: ' (dibatasi 5000)',
+  calledFrom: 'dipanggil dari L{line}', programEnd: '(program selesai)', end: 'akhir',
+  debugEmpty: 'Jalankan kode, lalu buka Time Machine untuk melihat variabel, call stack, dan watch di setiap langkah.',
+  debugStep: 'Langkah {i} dari {n} · baris {line}', debugInactive: 'Time Machine belum aktif — menampilkan langkah terakhir. Klik "Mulai" di bawah editor.',
+  watch: 'Watch', watchPh: 'nama variabel, mis. user.alamat.kota', add: 'Tambah', noWatch: 'Belum ada watch.', notInScope: '(tidak ada di scope langkah ini)',
+  removeWatch: 'Hapus watch', callStack: 'Call stack', now: '← sekarang', asyncTag: 'async',
+  scopeVars: 'Variabel dalam scope (sebelum baris dijalankan)', noVars: 'Tidak ada variabel.',
+  lpOn: 'Logpoint dipasang di baris {line}', lpOff: 'Logpoint di baris {line} dilepas',
+  lpTip: 'Klik untuk pasang logpoint', lpOnTip: 'Logpoint (klik untuk lepas)',
+  covOk: 'Tereksekusi', covPart: 'Sebagian tereksekusi', covNone: 'Tidak tereksekusi', covErr: 'Sumber error', covPath: 'Di jalur error',
+  pinned: '{expr} disematkan', unpinned: '{expr} dilepas', selectToPin: 'Blok sebuah ekspresi dulu',
+  peekWhere: 'langkah {i}', peekAfter: 'setelah baris {line}', peekLast: 'nilai terakhir (L{line})', peekEval: 'dihitung · jalan {n}×',
+  peekNever: 'tidak pernah dievaluasi', peekNotExpr: 'bukan ekspresi utuh',
+  timeout: 'Eksekusi > 4 detik dihentikan (infinite loop?)',
+  workerBlocked: 'Browser menolak Web Worker: ',
+  lang: 'Bahasa',
+};
+
+const dicts: Record<Lang, Dict> = { en, id };
+export type Key = keyof Dict;
+
+let current: Lang = 'en';
+export function setLang(l: Lang) { current = l; }
+export function getLang(): Lang { return current; }
+export function detectLang(): Lang {
+  return (navigator.language || 'en').toLowerCase().startsWith('id') ? 'id' : 'en';
+}
+export function t(key: Key, vars: Record<string, string | number> = {}): string {
+  return dicts[current][key].replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ''));
+}
