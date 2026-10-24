@@ -37,16 +37,16 @@
     "build:single": "node scripts/build-single.mjs"
   },
   "dependencies": {
-    "acorn": "^8.14.0",
-    "codemirror": "^5.65.18",
+    "acorn": "^8.19.0",
+    "codemirror": "^5.65.21",
     "lz-string": "^1.5.0",
-    "sucrase": "^3.35.0"
+    "sucrase": "^3.35.1"
   },
   "devDependencies": {
-    "@types/codemirror": "^5.60.15",
+    "@types/codemirror": "^5.60.18",
     "@types/node": "^22.20.5",
-    "typescript": "^5.6.3",
-    "vite": "^5.4.11",
-    "vitest": "^2.1.8"
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21",
+    "vitest": "^2.1.9"
   }
 }
