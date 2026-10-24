@@ -1,2 +1,2 @@
-/** Change this after you create the GitHub repository. */
-export const REPO_URL = 'https://github.com/your-username/jejak-js';
+/** Public repository of the project. */
+export const REPO_URL = 'https://github.com/muhwal21/jejak-js';
