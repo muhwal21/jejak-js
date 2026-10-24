@@ -160,8 +160,7 @@ $('#copyclip').onclick = () => {
   copyText(out.join('\n'));
 };
 document.querySelectorAll<HTMLButtonElement>('.tabs button').forEach(b => b.onclick = () => selectTab(b.dataset.tab as Tab));
-const gh = $('#ghLink') as HTMLAnchorElement;
-if (REPO_URL.includes('your-username')) gh.hidden = true; else gh.href = REPO_URL;
+($('#ghLink') as HTMLAnchorElement).href = REPO_URL;
 
 applyI18n();
 run();
