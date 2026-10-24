@@ -31,13 +31,15 @@ export interface RunState {
   source: string; userStart: number; userEnd: number;
   curLine: number;
   total: number;
+  /** language of the editor text; for 'ts' the instrumented offsets refer to the stripped JS */
+  lang: 'js' | 'ts';
   doneAt: number | null;
 }
 
 export function createRun(seq: number, src: string, t0 = 0): RunState {
   return {
     seq, src, t0, status: 'run', hits: [], steps: [], vals: [], logs: [], errors: [], chron: [],
-    syntax: null, meta: null, source: '', userStart: 0, userEnd: 0, curLine: 1, total: 0, doneAt: null,
+    syntax: null, meta: null, source: '', userStart: 0, userEnd: 0, curLine: 1, total: 0, doneAt: null, lang: 'js',
   };
 }
 

@@ -4,6 +4,12 @@ All notable changes are listed here. The format follows [Keep a Changelog](https
 
 ## [Unreleased]
 
+### Added
+- TypeScript mode (JS/TS switch): types are stripped with Sucrase before running, line numbers are preserved; TypeScript example, keywords and snippets; Prettier formats TypeScript.
+
+### Fixed
+- Value Peek on an expression that already has a live comment.
+
 ## [0.1.0]: first public release
 
 ### Added

@@ -1,5 +1,6 @@
 /** Owns the Web Worker: instruments the code, runs it, streams results into state.run. */
-import { instrument, JejakSyntaxError } from './core/instrument';
+import { instrument, lineAt, lineStartsOf, JejakSyntaxError } from './core/instrument';
+import { stripTypes } from './core/typescript';
 import { buildWorkerSource } from './core/build';
 import { createRun, ingest } from './core/session';
 import runtimeSrc from './core/runtime.js?raw';
@@ -24,11 +25,16 @@ export function execute(src: string) {
   const r = createRun(my, src, performance.now());
   state.run = r;
   const peek = state.peek;
+  const ts = state.codeLang === 'ts';
+  r.lang = ts ? 'ts' : 'js';
   let ins;
   try {
-    ins = instrument(src, {
+    const js = ts ? stripTypes(src) : src;
+    // TS: offsets differ after stripping types, so a peek is located by line + text instead
+    const peekAt = ts && peek ? { line: lineAt(lineStartsOf(src), peek.s), text: src.slice(peek.s, peek.e).trim() } : null;
+    ins = instrument(js, {
       logpoints: state.logpoints, logAll: state.logAll, inline: state.pins,
-      peek: peek ? { s: peek.s, e: peek.e } : null,
+      peek: !ts && peek ? { s: peek.s, e: peek.e } : null, peekAt,
     });
   } catch (e) {
     if (e instanceof JejakSyntaxError) {

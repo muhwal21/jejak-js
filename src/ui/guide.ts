@@ -22,6 +22,8 @@ export function guideHtml() {
 <tr><td>Shift+F9</td><td>${L('Pin the selected expression: an inline breakpoint that logs it every run.', 'Sematkan ekspresi yang diblok: inline breakpoint yang menampilkan nilainya setiap run.')}</td></tr>
 <tr><td>F9 · ${L('gutter', 'gutter')}</td><td>${L('Logpoint: show the values of the whole line.', 'Logpoint: tampilkan nilai seluruh baris.')}</td></tr>
 </table>
+<h3>TypeScript</h3>
+<p>${L('Switch JS → TS in the toolbar. Types are removed before running (no type checking, like Quokka) and line numbers stay the same.', 'Pindah JS → TS di toolbar. Tipe dibuang sebelum dijalankan (tanpa cek tipe, seperti Quokka) dan nomor baris tetap sama.')}</p>
 <h3>${L('Loops & hover', 'Loop & hover')}</h3>
 <p>${L('Inside a loop every execution of a line is shown in order (<code>0 1 2 3 …</code>). Hover the inline value to see every iteration, with a copy button.', 'Di dalam loop, setiap eksekusi baris ditampilkan berurutan (<code>0 1 2 3 …</code>). Arahkan kursor ke nilai inline untuk melihat semua putaran, lengkap dengan tombol salin.')}</p>
 <h3>${L('Editor', 'Editor')}</h3>

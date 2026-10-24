@@ -56,7 +56,7 @@ export function showPeekResult() {
   const p = state.peek, r = state.run;
   if (!p || !r || !r.meta) return;
   if (r.meta.peekId == null) { showPeek(p.x, p.y, p.text, null, t('peekNotExpr')); return; }
-  const all = r.vals.filter(v => v.kind === 'peek' && (!state.tm.on || v.step <= state.tm.i));
+  const all = r.vals.filter(v => v.vid === r.meta!.peekId && (!state.tm.on || v.step <= state.tm.i));
   if (!all.length) { showPeek(p.x, p.y, p.text, null, t('peekNever')); return; }
   showPeek(p.x, p.y, p.text, all[all.length - 1].v, t('peekEval', { n: all.length }));
 }

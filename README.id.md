@@ -15,6 +15,10 @@ Nilai inline, live comments, code coverage, Value Explorer, dan debugger Time Ma
 
 </div>
 
+## Perlu backend?
+
+Tidak. Semuanya jalan di browser: kode dieksekusi di Web Worker, link share menyimpan kode di URL, dan situsnya statis, jadi hosting GitHub Pages yang gratis sudah cukup. Backend baru dibutuhkan untuk fitur tambahan seperti akun, simpan kode di cloud, atau link share pendek.
+
 ## Kenapa
 
 Waktu belajar JavaScript (atau men-debug fungsi yang rumit), kita sering menambah `console.log`, menjalankan ulang, lalu menggulir output. jejak.js menampilkan hasil setiap baris langsung di samping kode, setiap kali kamu mengetik. Eksekusinya juga bisa diputar ulang langkah demi langkah.
@@ -51,6 +55,7 @@ Waktu belajar JavaScript (atau men-debug fungsi yang rumit), kita sering menamba
 - Snippet dengan isian yang bisa dilompati pakai Tab: `for`, `forof`, `if`, `try`, `arrow`, `class`, `map`, `reduce`, dan lainnya.
 - Rapikan kode dengan Prettier, plus rapikan otomatis yang cuma membetulkan spasi. Tidak pernah memindah baris dan tidak jalan setelah kamu menghapus.
 - Tutup kurung otomatis, komentar, multi-kursor, pencarian, dan lipat kode.
+- **TypeScript**: pilih TS lalu tulis kode bertipe. Tipe dibuang sebelum dijalankan (seperti Quokka, tanpa cek tipe) dan nomor baris tetap sama, jadi nilai inline tetap pas.
 - Tema terang, gelap, sepia, laut, dan kontras tinggi. UI dalam English dan Bahasa Indonesia.
 - Link share: kode dikompres ke dalam URL, tanpa backend.
 
@@ -83,7 +88,7 @@ Workflow `.github/workflows/pages.yml` otomatis menerbitkan setiap push ke `main
 
 ## Batasan & roadmap
 
-Kode jalan di Web Worker, jadi untuk saat ini belum ada `document`, import paket npm, dan input TypeScript. Daftar ide ada di [README.md](README.md#limitations--roadmap), dan bantuan sangat diterima.
+Kode jalan di Web Worker, jadi untuk saat ini belum ada `document` dan import paket npm. Daftar ide ada di [README.md](README.md#limitations--roadmap), dan bantuan sangat diterima.
 
 ## Kontribusi
 

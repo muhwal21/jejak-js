@@ -39,6 +39,8 @@ export interface InstrumentOptions {
   inline?: InlineTarget[];
   /** a single expression range to evaluate on demand (value peek of a selection) */
   peek?: { s: number; e: number } | null;
+  /** same as peek, but located by line + text (used when the editor text is TypeScript) */
+  peekAt?: InlineTarget | null;
 }
 export interface Instrumented {
   code: string;
@@ -225,20 +227,21 @@ export function instrument(src: string, opts: InstrumentOptions = {}): Instrumen
     while (e > s && /\s/.test(src[e - 1])) e--;
     return (byRange.get(s + ':' + e) || []).filter(canWrap).sort((a, b) => a.__depth - b.__depth)[0] || null;
   };
-  for (const t of opts.inline || []) {
-    if (t.line < 1 || t.line > ls.length) continue;
+  const locate = (t: InlineTarget) => {
+    if (t.line < 1 || t.line > ls.length) return null;
     const lineText = src.slice(ls[t.line - 1], ls[t.line] ?? src.length);
     const idx = lineText.indexOf(t.text);
-    if (idx < 0) continue;
+    if (idx < 0) return null;
     const s = ls[t.line - 1] + idx;
-    const n = rangeNode(s, s + t.text.length);
+    return rangeNode(s, s + t.text.length);
+  };
+  for (const t of opts.inline || []) {
+    const n = locate(t);
     if (n) addVal(n, { kind: 'inline' });
   }
   let peekId: number | null = null;
-  if (opts.peek) {
-    const n = rangeNode(opts.peek.s, opts.peek.e);
-    if (n) peekId = addVal(n, { kind: 'peek' });
-  }
+  const pn = opts.peek ? rangeNode(opts.peek.s, opts.peek.e) : opts.peekAt ? locate(opts.peekAt) : null;
+  if (pn) peekId = addVal(pn, { kind: 'peek' });
 
   // ---- logpoints + identifiers on their own line
   const lp = opts.logpoints || new Set<number>();

@@ -1,6 +1,6 @@
 import type { Lang } from './i18n';
 
-interface Example { name: Record<Lang, string>; code: Record<Lang, string> }
+interface Example { name: Record<Lang, string>; code: Record<Lang, string>; lang?: 'js' | 'ts' }
 
 /** Build bilingual code: `«en|id»` markers pick the text for each language. */
 const bi = (src: string): Record<Lang, string> => ({
@@ -237,6 +237,50 @@ console.log('«this line never runs|baris ini tidak pernah jalan»')
 
 «shop|toko» /*?+*/
 // «Open the Value Explorer tab → click "Graph" for a diagram.|Buka tab Value Explorer → klik "Graph" untuk tampilan diagram.»
+`),
+  },
+  {
+    name: { en: 'TypeScript', id: 'TypeScript' },
+    lang: 'ts',
+    code: bi(`// «Types are removed before running (like Quokka) — values still show inline.|Tipe dibuang sebelum dijalankan (seperti Quokka) — nilai tetap tampil inline.»
+interface «Product|Produk» {
+  «name|nama»: string
+  «price|harga»: number
+  tags?: string[]
+}
+
+type «Currency|MataUang» = 'IDR' | 'USD'
+
+enum Status { «Draft|Draf», «Live|Tayang» }
+
+const «items|barang»: «Product|Produk»[] = [
+  { «name|nama»: 'AWAL75', «price|harga»: 1_250_000, tags: ['keyboard'] },
+  { «name|nama»: 'Keycaps', «price|harga»: 300_000 },
+]
+
+function total<T extends { «price|harga»: number }>(list: T[]): number {
+  return list.reduce((sum, it) => sum + it.«price|harga», 0)
+}
+
+const «format|formatUang» = (n: number, c: «Currency|MataUang» = 'IDR'): string =>
+  c === 'IDR' ? 'Rp' + n.toLocaleString('id-ID') : '$' + n
+
+total(«items|barang») //?
+«format|formatUang»(total(«items|barang»)) //?
+Status.«Live|Tayang» //?
+
+class «Cart|Keranjang»<T> {
+  private «list|isi»: T[] = []
+  add(item: T): this {
+    this.«list|isi».push(item)
+    return this
+  }
+  get size(): number {
+    return this.«list|isi».length
+  }
+}
+
+new «Cart|Keranjang»<«Product|Produk»>().add(«items|barang»[0]).add(«items|barang»[1]).size //?
 `),
   },
 ];

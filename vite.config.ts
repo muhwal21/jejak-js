@@ -5,6 +5,6 @@ export default defineConfig({
   // relative base so the build works on GitHub Pages (https://user.github.io/jejak-js/)
   base: './',
   define: { __DEFAULT_LANG__: JSON.stringify(process.env.JEJAK_LANG || 'auto') },
-  build: { target: 'es2020', sourcemap: true },
+  build: { target: 'es2020', sourcemap: true, chunkSizeWarningLimit: 1200 },
   test: { include: ['test/**/*.test.ts'] },
 });

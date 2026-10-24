@@ -17,6 +17,7 @@ export const store = {
 export const state = {
   run: null as RunState | null,
   mode: store.get<Mode>('mode', 'auto'),
+  codeLang: store.get<'js' | 'ts'>('codeLang', 'js'),
   logpoints: new Set<number>(store.get<number[]>('lp', [])),
   pins: store.get<InlineTarget[]>('pins', []),
   logAll: store.get<boolean>('logall', false),

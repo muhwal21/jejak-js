@@ -37,6 +37,7 @@ function applyI18n() {
 /* ---------- initial code: shared link > saved draft > first example ---------- */
 const shared = decodeShare(location.hash);
 let initial = store.get<string | null>('code', null) ?? EXAMPLES[0].code[getLang()];
+if (shared?.lang) state.codeLang = shared.lang;
 if (shared) {
   initial = shared.code;
   state.logpoints = new Set(shared.logpoints || []);
@@ -112,17 +113,28 @@ $<HTMLSelectElement>('#ex').onchange = e => {
   if (!ex) return;
   state.logpoints.clear(); saveLogpoints();
   state.pins = []; savePins();
+  setCodeLang(ex.lang ?? 'js', true);
   cm.setValue(ex.code[getLang()]);
   run();
   (e.target as HTMLSelectElement).value = '';
 };
-const modeBtns = document.querySelectorAll<HTMLButtonElement>('.seg button');
+const modeBtns = document.querySelectorAll<HTMLButtonElement>('.seg button[data-mode]');
 const paintMode = () => modeBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === state.mode)));
 modeBtns.forEach(b => b.onclick = () => {
   state.mode = b.dataset.mode as Mode; store.set('mode', state.mode); paintMode();
   toast(t(state.mode === 'auto' ? 'modeAutoToast' : state.mode === 'save' ? 'modeSaveToast' : 'modeManualToast'));
 });
 paintMode();
+/* ---------- JavaScript / TypeScript ---------- */
+const langBtns = document.querySelectorAll<HTMLButtonElement>('#codeLang button');
+function setCodeLang(l: 'js' | 'ts', quiet = false) {
+  state.codeLang = l; store.set('codeLang', l);
+  langBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === l)));
+  cm.setOption('mode', l === 'ts' ? 'text/typescript' : 'javascript');
+  if (!quiet) { toast(t(l === 'ts' ? 'tsOn' : 'jsOn')); run(); }
+}
+langBtns.forEach(b => b.onclick = () => setCodeLang(b.dataset.lang as 'js' | 'ts'));
+setCodeLang(state.codeLang, true);
 const logAll = $<HTMLInputElement>('#logall');
 logAll.checked = state.logAll;
 logAll.onchange = () => { state.logAll = logAll.checked; store.set('logall', state.logAll); run(); };
@@ -142,7 +154,7 @@ $<HTMLSelectElement>('#lang').onchange = e => {
   applyI18n(); renderAll();
 };
 $('#share').onclick = () => {
-  const url = location.origin + location.pathname + '#' + encodeShare({ code: cm.getValue(), logpoints: [...state.logpoints] });
+  const url = location.origin + location.pathname + '#' + encodeShare({ code: cm.getValue(), logpoints: [...state.logpoints], lang: state.codeLang });
   copyText(url, t('linkCopied'));
 };
 $('#copyclip').onclick = () => {

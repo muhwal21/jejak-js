@@ -10,7 +10,8 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import type { Ser } from '../core/session';
-import { store } from '../state';
+import { store, state } from '../state';
+import { stripTypes } from '../core/typescript';
 import { getLang } from '../i18n';
 import { $, toast } from './dom';
 import { cm } from './editor';
@@ -59,7 +60,10 @@ const SNIPPETS: Snip[] = [
   ['promise', 'new Promise((resolve, reject) => {\n\t$0\n})', 'new Promise', 'new Promise'],
   ['timeout', 'setTimeout(() => {\n\t$0\n}, ${1:1000})', 'setTimeout', 'setTimeout'],
   ['lc', '//?', 'live comment: show value', 'live comment: tampilkan nilai'],
+  ['interface', 'interface ${1:Name} {\n\t${2:key}: ${0:string}\n}', 'TypeScript interface', 'interface TypeScript'],
+  ['typealias', 'type ${1:Name} = ${0:string}', 'TypeScript type alias', 'type alias TypeScript'],
 ];
+const TS_KEYWORDS = 'interface type enum implements namespace declare abstract private protected public readonly as satisfies keyof infer never unknown any string number boolean void'.split(' ');
 const KEYWORDS = 'const let var function return if else for while do switch case default break continue new class extends super this typeof instanceof try catch finally throw async await yield of in delete void null undefined true false'.split(' ');
 const GLOBALS = 'console Math JSON Object Array String Number Boolean Promise Map Set WeakMap Date RegExp Error TypeError Symbol BigInt parseInt parseFloat isNaN setTimeout setInterval clearTimeout clearInterval queueMicrotask structuredClone Intl globalThis'.split(' ');
 const METHODS: Record<string, string> = {
@@ -123,6 +127,7 @@ export function hint(ed: CodeMirror.Editor, opts?: { explicit?: boolean }): any 
     SNIPPETS.forEach(([k, body, en, id]) => push(k, 'snip', L(en, id), body));
     const snipNames = new Set(SNIPPETS.map(x => x[0]));
     KEYWORDS.forEach(k => { if (!snipNames.has(k)) push(k, 'kw', 'keyword'); });
+    if (state.codeLang === 'ts') TS_KEYWORDS.forEach(k => push(k, 'kw', 'TypeScript'));
     const ids = new Set(ed.getValue().match(/[A-Za-z_$][\w$]*/g) || []);
     ids.forEach(k => { if (k !== word && !KEYWORDS.includes(k) && k.length > 1) push(k, 'var', L('in this code', 'di kode ini')); });
     GLOBALS.forEach(k => push(k, 'glob', 'global'));
@@ -225,7 +230,7 @@ const loadScript = (src: string) => new Promise<void>((ok, no) => {
 function loadPrettier() {
   return prettierP ||= (async () => {
     await loadScript(PRETTIER + 'standalone.js');
-    await Promise.all([loadScript(PRETTIER + 'plugins/babel.js'), loadScript(PRETTIER + 'plugins/estree.js')]);
+    await Promise.all([loadScript(PRETTIER + 'plugins/babel.js'), loadScript(PRETTIER + 'plugins/estree.js'), loadScript(PRETTIER + 'plugins/typescript.js')]);
   })().catch(e => { prettierP = null; throw e; });
 }
 function wantSemi(src: string) {
@@ -253,7 +258,7 @@ export async function formatCode(silent = false) {
     const src = cm.getValue();
     const P = (window as any).prettier, plugins = (window as any).prettierPlugins;
     const res = await P.formatWithCursor(src, {
-      cursorOffset: cm.indexFromPos(cm.getCursor()), parser: 'babel', plugins: Object.values(plugins || {}),
+      cursorOffset: cm.indexFromPos(cm.getCursor()), parser: state.codeLang === 'ts' ? 'typescript' : 'babel', plugins: Object.values(plugins || {}),
       semi: wantSemi(src), singleQuote: edset.quote === 'single', tabWidth: edset.indent, printWidth: 90, trailingComma: 'none', arrowParens: 'avoid',
     });
     if (cm.getValue() !== src) return; // user typed meanwhile
@@ -316,7 +321,10 @@ export function initIde() {
       if (ca && ca.widget) { if (!waited) { fmtT = window.setTimeout(() => tick(true), 1300); return; } ca.close(); }
       if (snip || ed.somethingSelected()) return;
       if (!ed.getLine(ed.getCursor().line).trim()) return;
-      try { acorn.parse(ed.getValue(), { ecmaVersion: 'latest', allowAwaitOutsideFunction: true, allowReturnOutsideFunction: true, allowHashBang: true }); } catch { return; }
+      try {
+        const code = state.codeLang === 'ts' ? stripTypes(ed.getValue()) : ed.getValue();
+        acorn.parse(code, { ecmaVersion: 'latest', allowAwaitOutsideFunction: true, allowReturnOutsideFunction: true, allowHashBang: true });
+      } catch { return; }
       formatCode(true);
     };
     fmtT = window.setTimeout(() => tick(false), 1200);

@@ -18,6 +18,10 @@ Inline values, live comments, code coverage, a Value Explorer and a Time Machine
 
 *Jejak* is Indonesian for "trace" or "footprint".
 
+## Do I need a backend?
+
+No. Everything runs in the browser: code executes in a Web Worker, share links store the code in the URL, and the site is static, so GitHub Pages hosting is enough and free. A backend would only be needed for optional extras such as accounts, cloud-saved snippets or short share links.
+
 ## Why
 
 When you are learning JavaScript (or debugging a tricky function) you keep adding `console.log`, re-running, and scrolling through output. jejak.js shows the result of every line right next to the code, every time you type, and lets you replay the execution step by step.
@@ -54,6 +58,7 @@ When you are learning JavaScript (or debugging a tricky function) you keep addin
 - Snippets with tab stops: `for`, `forof`, `if`, `try`, `arrow`, `class`, `map`, `reduce`, and more.
 - Prettier formatting, plus a gentle auto-format that only fixes spacing. It never moves lines and never runs right after you delete something.
 - Auto-closing brackets, comment toggle, multi-cursor, search, and code folding.
+- **TypeScript**: switch to TS and write typed code. Types are stripped before running (like Quokka, no type checking) and line numbers stay the same, so inline values line up.
 - Themes: light, dark, sepia, ocean and high contrast. UI in English and Bahasa Indonesia.
 - Share links: the code is compressed into the URL, with no backend.
 
@@ -121,11 +126,12 @@ The workflow in `.github/workflows/pages.yml` publishes every push to `main` to 
 
 ## Limitations & roadmap
 
-Code runs in a Web Worker, so for now there is no `document`, no npm imports and no TypeScript input. Ideas where help is welcome:
+Code runs in a Web Worker, so for now there is no `document` and no npm imports. Ideas where help is welcome:
 
 - [ ] DOM mode in a sandboxed iframe (`document`, canvas, `fetch`)
 - [ ] npm imports through an ESM CDN
-- [ ] TypeScript input
+- [x] TypeScript input (types stripped with Sucrase)
+- [ ] TypeScript type checking (red underlines for type errors)
 - [ ] CodeMirror 6 (type-aware autocomplete, better mobile editing)
 - [ ] Edit-and-continue in the Time Machine
 - [ ] Multiple files / tabs

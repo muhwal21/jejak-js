@@ -1,10 +1,10 @@
 import LZString from 'lz-string';
 
 /** Encode code (+ optional settings) into a URL hash: #c=<compressed> */
-export interface Shared { code: string; logpoints?: number[] }
+export interface Shared { code: string; logpoints?: number[]; lang?: 'js' | 'ts' }
 
 export function encodeShare(s: Shared): string {
-  const payload = JSON.stringify({ c: s.code, l: s.logpoints?.length ? s.logpoints : undefined });
+  const payload = JSON.stringify({ c: s.code, l: s.logpoints?.length ? s.logpoints : undefined, t: s.lang === 'ts' ? 1 : undefined });
   return 'c=' + LZString.compressToEncodedURIComponent(payload);
 }
 
@@ -16,7 +16,7 @@ export function decodeShare(hash: string): Shared | null {
     if (!json) return null;
     const o = JSON.parse(json);
     if (typeof o.c !== 'string') return null;
-    return { code: o.c, logpoints: Array.isArray(o.l) ? o.l.filter((x: unknown) => typeof x === 'number') : [] };
+    return { code: o.c, logpoints: Array.isArray(o.l) ? o.l.filter((x: unknown) => typeof x === 'number') : [], lang: o.t ? 'ts' : 'js' };
   } catch {
     return null;
   }

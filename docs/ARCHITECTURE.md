@@ -21,6 +21,10 @@ session.ts ── ingest() ──► RunState { steps, vals, logs, errors, hits 
 ui/*  inline values · coverage gutter · panels · Time Machine · Value Peek
 ```
 
+## 0. TypeScript (`src/core/typescript.ts`)
+
+In TS mode the editor text first goes through Sucrase (`transforms: ['typescript']`). Sucrase removes types without moving any line, so everything below works on the stripped JavaScript while lines still match the editor. Offset-based decorations (exact-column underline, shaded uncovered code) are skipped in TS mode because columns can shift; a Value Peek is located by line + selected text instead of by offset.
+
 ## 1. Instrumentation (`src/core/instrument.ts`)
 
 The code is parsed with acorn (`preserveParens`, `locations`). One walk over the AST inserts tracker calls as text edits:

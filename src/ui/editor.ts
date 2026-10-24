@@ -64,7 +64,8 @@ export function renderEditor() {
     cm.clearGutter('jj-cov');
     const n = cm.lineCount();
     // the run may be stale while the user types; only decorate if text matches
-    const fresh = cm.getValue() === r.src;
+    // offset-based marks only when the instrumented text is exactly the editor text (not for TypeScript)
+    const fresh = cm.getValue() === r.src && r.lang !== 'ts';
     if (r.syntax) {
       const l = Math.min(r.syntax.line, n) - 1;
       cm.setGutterMarker(l, 'jj-cov', gutterMarker('err', 'SyntaxError'));
