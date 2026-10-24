@@ -23,7 +23,27 @@
     </div>
     <label class="chk" data-i18n-title="logAllTip"><input type="checkbox" id="logall"> <span data-i18n="logAll"></span></label>
     <div class="spacer"></div>
-    <select id="lang" class="lang" aria-label="Language"><option value="en">EN</option><option value="id">ID</option></select>
+    <button class="btn" id="fmt" data-i18n="format" data-i18n-title="formatTip"></button>
+    <div class="popwrap">
+      <button class="btn" id="edsetBtn" aria-haspopup="true" aria-expanded="false">⚙ <span data-i18n="editor"></span></button>
+      <div class="edpop" id="edpop" hidden>
+        <h4 data-i18n="format"></h4>
+        <label class="row"><input type="checkbox" id="opAuto"> <span data-i18n="optAuto"></span></label>
+        <label class="row"><input type="checkbox" id="opSave"> <span data-i18n="optSave"></span></label>
+        <h4 data-i18n="optStyle"></h4>
+        <label class="grid"><span data-i18n="optIndent"></span> <select id="opIndent"><option value="2">2</option><option value="4">4</option></select></label>
+        <label class="grid"><span data-i18n="optSemi"></span> <select id="opSemi"><option value="auto" data-i18n="optSemiAuto"></option><option value="yes" data-i18n="optSemiYes"></option><option value="no" data-i18n="optSemiNo"></option></select></label>
+        <label class="grid"><span data-i18n="optQuote"></span> <select id="opQuote"><option value="single">'single'</option><option value="double">"double"</option></select></label>
+        <label class="grid"><span data-i18n="optFont"></span> <select id="opFont"><option value="12.5">S</option><option value="13.5">M</option><option value="15">L</option><option value="17">XL</option></select></label>
+        <h4 data-i18n="appearance"></h4>
+        <label class="grid"><span data-i18n="theme"></span> <select id="skin">
+      <option value="" data-i18n="themeSystemShort"></option><option value="light" data-i18n="themeLight"></option><option value="dark" data-i18n="themeDark"></option>
+      <option value="sepia" data-i18n="themeSepia"></option><option value="ocean" data-i18n="themeOcean"></option><option value="contrast" data-i18n="themeContrast"></option>
+        </select></label>
+        <label class="grid"><span data-i18n="lang"></span> <select id="lang"><option value="en">English</option><option value="id">Bahasa Indonesia</option></select></label>
+        <p class="note"><code>let x=1+2</code> → <code>let x = 1 + 2</code></p>
+      </div>
+    </div>
     <button class="btn" id="share" data-i18n="share" data-i18n-title="shareTip"></button>
     <button class="btn" id="copyclip" data-i18n="copyResult" data-i18n-title="copyResultTip"></button>
     <button class="btn primary" id="run" title="Ctrl/Cmd+Enter">▶ <span data-i18n="run"></span></button>
