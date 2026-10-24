@@ -4,12 +4,14 @@ import { state } from '../state';
 import { t } from '../i18n';
 import { $, el } from './dom';
 import { tree } from './tree';
-import { cm } from './editor';
+import { cm, lineEntries } from './editor';
+import { previewOf, fmtMs } from '../core/session';
+import { copyText } from './dom';
 
 let peekEl: HTMLElement;
 let hoverT = 0, selT = 0;
 
-function lookup(expr: string, line: number): { v: Ser; where: string } | null {
+export function lookup(expr: string, line: number): { v: Ser; where: string } | null {
   const r = state.run; if (!r || !r.steps.length) return null;
   const root = expr.split(/[.[]/)[0];
   const S = r.steps;
@@ -64,6 +66,7 @@ export function initPeek(runPeek: () => void) {
   const wrap = cm.getWrapperElement();
   wrap.addEventListener('mousemove', e => {
     clearTimeout(hoverT);
+    if ((e.target as HTMLElement).closest('.iv')) return; // inline values have their own hover
     if (cm.somethingSelected()) return;
     hoverT = window.setTimeout(() => {
       if ((e.target as HTMLElement).closest('.CodeMirror-gutters')) return;
@@ -94,4 +97,36 @@ export function initPeek(runPeek: () => void) {
       runPeek();
     }, 350);
   });
+}
+
+/** Hover on the inline values of a line: list every execution (like Quokka's hover). */
+export function showLineValues(line: number, x: number, y: number) {
+  const arr = lineEntries.get(line); if (!arr || !arr.length) return;
+  peekEl.textContent = '';
+  const head = el('div', 'ph');
+  head.append(el('span', null, 'L' + line + ' · ' + arr.length + '×'));
+  const cp = el('button', 'mini', t('copy'));
+  cp.onclick = () => copyText(arr.map(o => previewOf(o)).join('\n'));
+  head.appendChild(cp);
+  peekEl.appendChild(head);
+  const list = el('div', 'tree pv-list');
+  arr.slice(0, 300).forEach((o, i) => {
+    const row = el('div', 'pv-row');
+    row.appendChild(el('span', 'pv-i', '#' + (i + 1)));
+    const body = el('div'); body.style.minWidth = '0'; body.style.flex = '1';
+    if (o.type === 'err') body.appendChild(el('span', 't-err', previewOf(o)));
+    else if (o.type === 'log') {
+      if (o.a.every(a => !a.c || !a.c.length)) body.appendChild(el('span', 'p', previewOf(o)));
+      else o.a.forEach((a, k) => body.appendChild(tree(a, null, 'lv' + line + ':' + i + ':' + k, 0)));
+    } else body.appendChild(o.v.c && o.v.c.length ? tree(o.v, null, 'lv' + line + ':' + i, 0) : el('span', 'p t-' + o.v.t, o.v.p));
+    if (o.type === 'val' && o.ms != null) body.appendChild(el('span', 'ms-badge', ' ' + fmtMs(o.ms)));
+    row.appendChild(body);
+    list.appendChild(row);
+  });
+  if (arr.length > 300) list.appendChild(el('div', 'pv-note', '… +' + (arr.length - 300)));
+  peekEl.appendChild(list);
+  peekEl.hidden = false;
+  const w = peekEl.offsetWidth, h = peekEl.offsetHeight;
+  peekEl.style.left = Math.max(8, Math.min(x, innerWidth - w - 12)) + 'px';
+  peekEl.style.top = (y + h + 24 > innerHeight ? Math.max(8, y - h - 8) : y + 18) + 'px';
 }

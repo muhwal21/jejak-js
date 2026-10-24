@@ -1,4 +1,6 @@
 import 'codemirror/lib/codemirror.css';
+import 'codemirror/addon/fold/foldgutter.css';
+import 'codemirror/addon/dialog/dialog.css';
 import './styles.css';
 import { state, store, saveLogpoints, savePins, type Mode, type Tab } from './state';
 import { t, setLang, getLang, detectLang, type Lang, type Key } from './i18n';
@@ -12,7 +14,10 @@ import { $, el, toast, copyText } from './ui/dom';
 import { createEditor, renderEditor, cm } from './ui/editor';
 import { renderPanels, selectTab, setTmOpener } from './ui/panels';
 import { initTimeMachine, renderTmBar, tmOn, tmStep, tmJump } from './ui/timemachine';
-import { initPeek, showPeekResult, hidePeek } from './ui/peek';
+import { initPeek, showPeekResult, hidePeek, showLineValues } from './ui/peek';
+import { initIde, ideKeys, edset, formatCode } from './ui/ide';
+import CodeMirror from 'codemirror';
+import { setInlineHover } from './ui/editor';
 
 /* ---------- language ---------- */
 setLang(store.get<Lang>('lang', detectLang()));
@@ -40,14 +45,19 @@ if (shared) {
 
 /* ---------- editor ---------- */
 const run = () => { state.peek = null; hidePeek(); execute(cm.getValue()); };
+const saveRun = async () => { if (edset.fmtSave) await formatCode(true); run(); };
+// Alt+arrows drive the Time Machine only while it is open; otherwise they keep their editor meaning
+const tmKey = (k: Parameters<typeof tmStep>[0]) => () => { if (!state.tm.on) return CodeMirror.Pass; tmStep(k); };
 createEditor($('#editor'), initial, {
-  'Ctrl-Enter': run, 'Cmd-Enter': run, 'Ctrl-S': run, 'Cmd-S': run,
+  ...ideKeys,
+  'Ctrl-Enter': run, 'Cmd-Enter': run, 'Ctrl-S': () => { saveRun(); }, 'Cmd-S': () => { saveRun(); },
   'F9': () => toggleLogpoint(cm.getCursor().line + 1),
   'Shift-F9': () => togglePin(),
-  'Alt-Right': () => tmStep('into'), 'Alt-Left': () => tmStep('back'),
-  'Alt-Down': () => tmStep('over'), 'Alt-Up': () => tmStep('out'), 'Alt-J': () => tmJump(),
-  'Tab': c => c.execCommand('insertSoftTab'),
+  'Alt-Right': tmKey('into'), 'Alt-Left': tmKey('back'),
+  'Alt-Down': tmKey('over'), 'Alt-Up': tmKey('out'), 'Alt-J': () => tmJump(),
 });
+initIde();
+setInlineHover(showLineValues);
 
 let typeT = 0;
 cm.on('change', () => {
@@ -117,6 +127,16 @@ const logAll = $<HTMLInputElement>('#logall');
 logAll.checked = state.logAll;
 logAll.onchange = () => { state.logAll = logAll.checked; store.set('logall', state.logAll); run(); };
 $('#run').onclick = run;
+/* ---------- themes ---------- */
+const skinSel = $<HTMLSelectElement>('#skin');
+function applySkin(v: string) {
+  if (v) document.documentElement.dataset.skin = v; else delete document.documentElement.dataset.skin;
+  store.set('skin', v);
+  if (state.run) renderAll();
+}
+skinSel.value = store.get<string>('skin', '');
+applySkin(skinSel.value);
+skinSel.onchange = () => applySkin(skinSel.value);
 $<HTMLSelectElement>('#lang').onchange = e => {
   setLang((e.target as HTMLSelectElement).value as Lang); store.set('lang', getLang());
   applyI18n(); renderAll();
@@ -140,7 +160,8 @@ $('#copyclip').onclick = () => {
   copyText(out.join('\n'));
 };
 document.querySelectorAll<HTMLButtonElement>('.tabs button').forEach(b => b.onclick = () => selectTab(b.dataset.tab as Tab));
-($('#ghLink') as HTMLAnchorElement).href = REPO_URL;
+const gh = $('#ghLink') as HTMLAnchorElement;
+if (REPO_URL.includes('your-username')) gh.hidden = true; else gh.href = REPO_URL;
 
 applyI18n();
 run();

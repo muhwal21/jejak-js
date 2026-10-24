@@ -22,6 +22,15 @@ export function guideHtml() {
 <tr><td>Shift+F9</td><td>${L('Pin the selected expression: an inline breakpoint that logs it every run.', 'Sematkan ekspresi yang diblok: inline breakpoint yang menampilkan nilainya setiap run.')}</td></tr>
 <tr><td>F9 · ${L('gutter', 'gutter')}</td><td>${L('Logpoint: show the values of the whole line.', 'Logpoint: tampilkan nilai seluruh baris.')}</td></tr>
 </table>
+<h3>${L('Loops & hover', 'Loop & hover')}</h3>
+<p>${L('Inside a loop every execution of a line is shown in order (<code>0 1 2 3 …</code>). Hover the inline value to see every iteration, with a copy button.', 'Di dalam loop, setiap eksekusi baris ditampilkan berurutan (<code>0 1 2 3 …</code>). Arahkan kursor ke nilai inline untuk melihat semua putaran, lengkap dengan tombol salin.')}</p>
+<h3>${L('Editor', 'Editor')}</h3>
+<table>
+<tr><td>${L('autocomplete', 'autocomplete')}</td><td>${L('Suggestions while typing (Ctrl+Space to open). After a dot, methods come from the real runtime type.', 'Saran muncul saat mengetik (Ctrl+Space untuk membuka). Setelah titik, method diambil dari tipe nilai aslinya.')}</td></tr>
+<tr><td>snippets</td><td><code>for forof forin foreach if ifelse switch try function arrow async class log map filter reduce promise timeout</code> — ${L('Tab jumps to the next field', 'Tab pindah ke isian berikutnya')}</td></tr>
+<tr><td>${L('format', 'rapikan')}</td><td>${L('Shift+Alt+F or the Format button. Gentle auto-format fixes spacing after a pause (never after deleting). Options under ⚙ Editor.', 'Shift+Alt+F atau tombol Rapikan. Rapikan otomatis membetulkan spasi saat jeda mengetik (tidak pernah setelah menghapus). Atur di ⚙ Editor.')}</td></tr>
+<tr><td>Ctrl/⌘ / · D · F</td><td>${L('Toggle comment · next occurrence (multi-cursor) · search', 'Komentar · pilih kata sama berikutnya (multi-kursor) · cari')}</td></tr>
+</table>
 <h3>${L('Coverage gutter', 'Gutter coverage')}</h3>
 <table>
 <tr><td>${dot('--cov-ok')}${L('green', 'hijau')}</td><td>${L('Line ran.', 'Baris tereksekusi penuh.')}</td></tr>
@@ -37,7 +46,7 @@ export function guideHtml() {
 <tr><td><kbd>Ctrl/⌘ Enter</kbd></td><td>${L('Run', 'Jalankan')}</td></tr>
 <tr><td><kbd>Ctrl/⌘ S</kbd></td><td>${L('Run (On save mode)', 'Jalankan (mode Saat simpan)')}</td></tr>
 <tr><td><kbd>F9</kbd> · <kbd>Shift F9</kbd></td><td>${L('Toggle logpoint · pin selection', 'Logpoint · sematkan seleksi')}</td></tr>
-<tr><td><kbd>Alt →</kbd> <kbd>Alt ←</kbd></td><td>Step into / ${L('back', 'mundur')}</td></tr>
+<tr><td><kbd>Alt →</kbd> <kbd>Alt ←</kbd></td><td>Step into / ${L('back', 'mundur')} (${L('while the Time Machine is open', 'saat Time Machine aktif')})</td></tr>
 <tr><td><kbd>Alt ↓</kbd> <kbd>Alt ↑</kbd></td><td>Step over / step out</td></tr>
 <tr><td><kbd>Alt J</kbd></td><td>${L('Jump to the next execution of the cursor line', 'Lompat ke eksekusi berikutnya di baris kursor')}</td></tr>
 </table>

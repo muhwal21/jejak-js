@@ -1,6 +1,17 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/comment/comment';
+import 'codemirror/addon/selection/active-line';
+import 'codemirror/addon/fold/foldcode';
+import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/fold/brace-fold';
+import 'codemirror/addon/fold/comment-fold';
+import 'codemirror/addon/dialog/dialog';
+import 'codemirror/addon/search/searchcursor';
+import 'codemirror/addon/search/search';
+import 'codemirror/keymap/sublime';
 import { computeCoverage } from '../core/coverage';
 import { previewOf, fmtMs, type Entry } from '../core/session';
 import { state } from '../state';
@@ -10,14 +21,18 @@ export let cm: CodeMirror.Editor;
 
 export function createEditor(host: HTMLElement, value: string, extraKeys: CodeMirror.KeyMap) {
   cm = CodeMirror(host, {
-    value, mode: 'javascript', lineNumbers: true, gutters: ['CodeMirror-linenumbers', 'jj-cov'],
-    tabSize: 2, indentUnit: 2, lineWrapping: false, extraKeys,
-    matchBrackets: true,
-  });
+    value, mode: 'javascript', lineNumbers: true, gutters: ['CodeMirror-linenumbers', 'jj-cov', 'CodeMirror-foldgutter'],
+    tabSize: 2, indentUnit: 2, lineWrapping: false, extraKeys, keyMap: 'sublime',
+    matchBrackets: true, autoCloseBrackets: "()[]{}''\"\"``", styleActiveLine: true, foldGutter: true,
+  } as CodeMirror.EditorConfiguration);
   return cm;
 }
 
 let marks: CodeMirror.TextMarker[] = [];
+/** entries shown on each line (1-based), used by the hover popup */
+export const lineEntries = new Map<number, Entry[]>();
+let onInlineHover: (line: number, x: number, y: number) => void = () => {};
+export function setInlineHover(fn: typeof onInlineHover) { onInlineHover = fn; }
 let lineClasses: number[] = [];
 let tmLine: number | null = null;
 
@@ -30,6 +45,11 @@ function gutterMarker(cls: string, title: string) {
 function addInline(line: number, parts: { cls?: string; t: string }[], first = false) {
   const span = document.createElement('span');
   span.className = 'iv';
+  span.addEventListener('mouseenter', e => onInlineHover(line + 1, e.clientX, e.clientY));
+  span.addEventListener('mouseleave', () => setTimeout(() => {
+    const pk = document.getElementById('peek');
+    if (pk && !pk.matches(':hover') && !state.peek) pk.hidden = true;
+  }, 250));
   for (const p of parts) { const s = document.createElement('span'); if (p.cls) s.className = p.cls; s.textContent = p.t; span.appendChild(s); }
   marks.push(cm.setBookmark({ line, ch: cm.getLine(line).length }, { widget: span, insertLeft: !first }));
 }
@@ -86,21 +106,22 @@ export function renderEditor() {
       if (!byLine.has(o.line)) byLine.set(o.line, []);
       byLine.get(o.line)!.push(o);
     }
+    lineEntries.clear();
     for (const [line, arr] of byLine) {
       if (line > n) continue;
+      lineEntries.set(line, arr);
       const parts: { cls?: string; t: string }[] = [];
       const errs = arr.filter(o => o.type === 'err');
       if (errs.length) { const e = errs[errs.length - 1]; parts.push({ cls: 'er', t: '✖ ' + previewOf(e) }); }
       else {
-        const show = arr.slice(-12);
-        if (arr.length > 12) parts.push({ cls: 'lg', t: '… ' });
+        // like Quokka: every execution of the line, in order, cut off by width (hover shows all)
         let len = 0;
-        for (const o of show) {
+        for (const o of arr) {
           let tx = previewOf(o);
           if (o.type === 'val' && o.kind === 'inline') tx = o.src.slice(0, 24) + (o.src.length > 24 ? '…' : '') + ': ' + tx;
           if (tx.length > 80) tx = tx.slice(0, 79) + '…';
           len += tx.length;
-          if (len > 170) { parts.push({ cls: 'lg', t: '…' }); break; }
+          if (len > 160) { parts.push({ cls: 'lg', t: '…' }); break; }
           parts.push({ cls: o.type === 'log' ? 'lg' : o.type === 'val' && o.kind === 'inline' ? 'pn' : '', t: tx + ' ' });
           if (o.type === 'val' && o.ms != null) parts.push({ cls: 'ms', t: fmtMs(o.ms) + ' ' });
         }

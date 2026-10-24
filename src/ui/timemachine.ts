@@ -99,7 +99,10 @@ const esc = (s: string) => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;
 /* ---------- interactive timeline ---------- */
 let tl: HTMLCanvasElement;
 function sizeCanvas() { const dpr = devicePixelRatio || 1; tl.width = (tl.clientWidth || 600) * dpr; tl.height = 34 * dpr; }
+const DARK_SKINS = new Set(['dark', 'ocean', 'contrast']);
 function isDark() {
+  const sk = document.documentElement.dataset.skin;
+  if (sk) return DARK_SKINS.has(sk);
   const th = document.documentElement.dataset.theme;
   return th === 'dark' || (th !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
 }

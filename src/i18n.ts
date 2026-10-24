@@ -8,7 +8,7 @@ const en = {
   modeAutoToast: 'Auto mode: runs as you type', modeSaveToast: 'Save mode: press Ctrl/Cmd+S', modeManualToast: 'Manual mode: click Run',
   logAll: 'Log every line', logAllTip: 'Logpoint on every line: show the value of each expression',
   share: 'Share', shareTip: 'Copy a link that opens this code',
-  copyResult: 'Copy with results', copyResultTip: 'Copy the code with its results as comments',
+  copyResult: 'Copy', copyResultTip: 'Copy the code with its results as comments',
   run: 'Run',
   tm: 'Time Machine', tmStart: 'Start', tmClose: 'Close',
   tmFirst: 'Go to start', tmBack: 'Step back (Alt+←)', tmPlay: 'Auto-play', tmInto: 'Step into (Alt+→)',
@@ -19,7 +19,7 @@ const en = {
   tabExplorer: 'Value Explorer', tabConsole: 'Console', tabStory: 'Order', tabDebug: 'Stack & Watch', tabGuide: 'Guide',
   ready: 'Ready', running: 'Running…', done: 'Done · {ms}', errors: '{n} error · {ms}', syntaxAt: 'SyntaxError on line {line}',
   coverage: 'Coverage {p}% ({hit}/{total} statements & branches)', steps: '{n} steps',
-  hint: 'Click the gutter for a logpoint · select an expression to evaluate it · Shift+F9 pins it',
+  hint: 'Hover a value to see every iteration · click the gutter for a logpoint · select an expression to evaluate it',
   noResult: 'No results yet.', fixSyntax: 'Fix the syntax error on line {line} first: {msg}',
   noValues: 'No values yet. Put an identifier on its own line, add //? after an expression, or use console.log().',
   kindValue: 'value', kindLogpoint: 'logpoint', kindPinned: 'pinned', kindError: 'error',
@@ -43,6 +43,11 @@ const en = {
   timeout: 'Execution took more than 4 seconds and was stopped (infinite loop?)',
   workerBlocked: 'The browser blocked the Web Worker: ',
   lang: 'Language',
+  theme: 'Theme', themeSystem: 'Theme: system', themeSystemShort: 'System', appearance: 'Appearance', themeLight: 'Light', themeDark: 'Dark', themeSepia: 'Sepia', themeOcean: 'Ocean', themeContrast: 'High contrast',
+  format: 'Format', formatTip: 'Format code with Prettier (Shift+Alt+F)', editor: 'Editor',
+  optAuto: 'Auto-format when you pause typing', optSave: 'Format on Ctrl/⌘+S', optStyle: 'Style',
+  optIndent: 'Indent (spaces)', optSemi: 'Semicolons', optSemiAuto: 'Follow code', optSemiYes: 'Always', optSemiNo: 'Never',
+  optQuote: 'Quotes', optFont: 'Font size',
 };
 type Dict = typeof en;
 
@@ -54,7 +59,7 @@ const id: Dict = {
   modeAutoToast: 'Mode otomatis: jalan saat mengetik', modeSaveToast: 'Mode simpan: tekan Ctrl/Cmd+S', modeManualToast: 'Mode manual: klik Jalankan',
   logAll: 'Log semua baris', logAllTip: 'Logpoint di semua baris: tampilkan nilai setiap ekspresi',
   share: 'Bagikan', shareTip: 'Salin link yang membuka kode ini',
-  copyResult: 'Salin hasil', copyResultTip: 'Salin kode beserta hasilnya sebagai komentar',
+  copyResult: 'Salin', copyResultTip: 'Salin kode beserta hasilnya sebagai komentar',
   run: 'Jalankan',
   tm: 'Time Machine', tmStart: 'Mulai', tmClose: 'Tutup',
   tmFirst: 'Ke awal', tmBack: 'Mundur satu langkah (Alt+←)', tmPlay: 'Putar otomatis', tmInto: 'Step into (Alt+→)',
@@ -65,7 +70,7 @@ const id: Dict = {
   tabExplorer: 'Value Explorer', tabConsole: 'Console', tabStory: 'Urutan', tabDebug: 'Stack & Watch', tabGuide: 'Panduan',
   ready: 'Siap', running: 'Menjalankan…', done: 'Selesai · {ms}', errors: '{n} error · {ms}', syntaxAt: 'SyntaxError di baris {line}',
   coverage: 'Coverage {p}% ({hit}/{total} statement & cabang)', steps: '{n} langkah',
-  hint: 'Klik gutter untuk logpoint · blok ekspresi untuk menghitungnya · Shift+F9 menyematkannya',
+  hint: 'Arahkan kursor ke nilai untuk melihat tiap putaran · klik gutter untuk logpoint · blok ekspresi untuk menghitungnya',
   noResult: 'Belum ada hasil.', fixSyntax: 'Perbaiki syntax error di baris {line} dulu: {msg}',
   noValues: 'Belum ada nilai. Tulis identifier di barisnya sendiri, tambahkan //? setelah ekspresi, atau pakai console.log().',
   kindValue: 'nilai', kindLogpoint: 'logpoint', kindPinned: 'disematkan', kindError: 'error',
@@ -89,6 +94,11 @@ const id: Dict = {
   timeout: 'Eksekusi > 4 detik dihentikan (infinite loop?)',
   workerBlocked: 'Browser menolak Web Worker: ',
   lang: 'Bahasa',
+  theme: 'Tema', themeSystem: 'Tema: sistem', themeSystemShort: 'Ikuti sistem', appearance: 'Tampilan', themeLight: 'Terang', themeDark: 'Gelap', themeSepia: 'Sepia', themeOcean: 'Laut', themeContrast: 'Kontras tinggi',
+  format: 'Rapikan', formatTip: 'Rapikan kode dengan Prettier (Shift+Alt+F)', editor: 'Editor',
+  optAuto: 'Rapikan otomatis saat berhenti mengetik', optSave: 'Rapikan saat Ctrl/⌘+S', optStyle: 'Gaya',
+  optIndent: 'Indentasi (spasi)', optSemi: 'Titik koma', optSemiAuto: 'Ikuti kode', optSemiYes: 'Selalu', optSemiNo: 'Tanpa',
+  optQuote: 'Kutip string', optFont: 'Ukuran font',
 };
 
 const dicts: Record<Lang, Dict> = { en, id };
@@ -98,6 +108,7 @@ let current: Lang = 'en';
 export function setLang(l: Lang) { current = l; }
 export function getLang(): Lang { return current; }
 export function detectLang(): Lang {
+  if (__DEFAULT_LANG__ === 'id' || __DEFAULT_LANG__ === 'en') return __DEFAULT_LANG__;
   return (navigator.language || 'en').toLowerCase().startsWith('id') ? 'id' : 'en';
 }
 export function t(key: Key, vars: Record<string, string | number> = {}): string {
