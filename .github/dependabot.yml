@@ -4,9 +4,13 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # major upgrades (e.g. CodeMirror 5 -> 6, Vite, Vitest) change APIs and are done by hand
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     groups:
-      dev-dependencies:
-        dependency-type: development
+      minor-and-patch:
+        update-types: [minor, patch]
   - package-ecosystem: github-actions
     directory: /
     schedule:
